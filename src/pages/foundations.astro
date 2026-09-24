@@ -1,0 +1,164 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Section from "../components/Section.astro";
+import Example from "../components/Example.astro";
+import { darkTokens, lightTokens } from "../lib/library";
+import { Button, Heading, Input, Table, Text } from "@vikalpshakya/ui";
+
+// Everything below is read from the installed styles.css, so it can't drift
+// from what the components use.
+const themed = [...darkTokens.keys()].filter((name) => name !== "color-scheme" && name !== "focus-ring");
+const status = ["success", "warning", "error", "destructive", "info"].flatMap((n) => [n, `${n}-foreground`]);
+const pick = (prefix: string) => [...lightTokens].filter(([name]) => name.startsWith(prefix));
+
+const fontSizes = pick("font-size-");
+const radii = pick("radius-");
+const shadows = pick("shadow-");
+const spaces = [0.5, 1, 2, 3, 4, 6, 8, 12];
+
+const toc = [
+  {
+    group: "Foundations",
+    items: [
+      { id: "colors", label: "Colors" },
+      { id: "status", label: "Status colors" },
+      { id: "typography", label: "Typography" },
+      { id: "spacing", label: "Spacing" },
+      { id: "radius", label: "Radius" },
+      { id: "elevation", label: "Elevation" },
+      { id: "controls", label: "Control heights" },
+      { id: "other", label: "Motion & layers" },
+    ],
+  },
+];
+---
+
+<Layout title="Foundations" description="Design tokens of @vikalpshakya/ui" toc={toc}>
+  <div class="demo-intro">
+    <Heading level={1} size="3xl">Foundations</Heading>
+    <Text tone="muted">
+      Components never hardcode values; they read <code>--ui-*</code> CSS variables. Light values
+      live on <code>:root</code>, dark values on <code>.dark</code> (any ancestor). Toggle dark mode
+      in the header to see every example switch.
+    </Text>
+  </div>
+
+  <Section
+    id="colors"
+    title="Semantic colors"
+    description="Each role has a light and a dark value; -foreground is the text color to use on it."
+    code={`.panel {\n  background: var(--ui-card);\n  color: var(--ui-card-foreground);\n  border: 1px solid var(--ui-border);\n}`}
+  >
+    <Table density="compact" className="demo-token-table">
+      <caption>Themed color tokens</caption>
+      <thead>
+        <tr><th scope="col">Token</th><th scope="col">Light</th><th scope="col">Dark</th></tr>
+      </thead>
+      <tbody>
+        {themed.map((name) => (
+          <tr>
+            <td><code>--ui-{name}</code></td>
+            <td><span class="demo-swatch" style={`--swatch:${lightTokens.get(name)}`}>{lightTokens.get(name)}</span></td>
+            <td><span class="demo-swatch" style={`--swatch:${darkTokens.get(name)}`}>{darkTokens.get(name)}</span></td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+  </Section>
+
+  <Section id="status" title="Status colors" description="Identical in both themes, each with its agreed foreground.">
+    <Table density="compact" className="demo-token-table">
+      <caption>Status color tokens</caption>
+      <thead>
+        <tr><th scope="col">Token</th><th scope="col">Value</th></tr>
+      </thead>
+      <tbody>
+        {status.map((name) => (
+          <tr>
+            <td><code>--ui-{name}</code></td>
+            <td><span class="demo-swatch" style={`--swatch:${lightTokens.get(name)}`}>{lightTokens.get(name)}</span></td>
+          </tr>
+        ))}
+      </tbody>
+    </Table>
+  </Section>
+
+  <Section
+    id="typography"
+    title="Typography"
+    description="Fira Sans for UI text, Ubuntu Mono for logs and IDs. The library references the fonts; this app loads them (Astro fonts) and points the tokens at them."
+    code={`:root {\n  --ui-font-family-sans: var(--font-fira-sans);\n  --ui-font-family-mono: var(--font-ubuntu-mono);\n}`}
+  >
+    <Example label="Sizes (--ui-font-size-*)" stack>
+      {fontSizes.map(([name, value]) => (
+        <Text style={{ fontSize: `var(--ui-${name})`, lineHeight: "var(--ui-line-height-tight)" }}>
+          <code>{name.replace("font-size-", "")} · {value}</code> Accelerating 5G test automation
+        </Text>
+      ))}
+    </Example>
+    <Example label="Families and weights" stack>
+      <Text>Fira Sans regular (400): the quick brown fox</Text>
+      <Text weight="bold">Fira Sans bold (700): the quick brown fox</Text>
+      <Text mono>Ubuntu Mono: gNB-DU 0x1F4 · RSRP -87 dBm</Text>
+    </Example>
+  </Section>
+
+  <Section
+    id="spacing"
+    title="Spacing"
+    description={`One ${lightTokens.get("spacing")} unit. Components write calc(var(--ui-spacing) * N); gap props take the same multipliers.`}
+    code={`<Stack gap={2}>…</Stack>   <!-- 2 × 6px = 12px -->\npadding: calc(var(--ui-spacing) * 4);`}
+  >
+    <Example label="Multiples of --ui-spacing" stack>
+      {spaces.map((n) => (
+        <div style="display:flex;align-items:center;gap:12px">
+          <code style="width:88px;font-size:var(--ui-font-size-sm)">× {n} = {n * 6}px</code>
+          <div class="demo-bar" style={`width:calc(var(--ui-spacing) * ${n})`}></div>
+        </div>
+      ))}
+    </Example>
+  </Section>
+
+  <Section id="radius" title="Radius" description="One --ui-radius knob; the other steps are multiples of it.">
+    <Example label="--ui-radius-*">
+      {radii.map(([name, value]) => (
+        <div class="demo-shape" style={`border-radius:var(--ui-${name})`} title={value}>{name.replace("radius-", "")}</div>
+      ))}
+    </Example>
+  </Section>
+
+  <Section id="elevation" title="Elevation" description="Two shadows, matching the website's cards.">
+    <Example label="--ui-shadow-*">
+      {shadows.map(([name]) => (
+        <div class="demo-shape" style={`box-shadow:var(--ui-${name});border-radius:var(--ui-radius-lg)`}>{name}</div>
+      ))}
+    </Example>
+  </Section>
+
+  <Section
+    id="controls"
+    title="Control heights"
+    description="Shared by Button and the form fields so they align in a row. They grow one unit from 640px."
+  >
+    <Example label="sm · md · lg">
+      <Button size="sm">Small</Button>
+      <Button>Medium</Button>
+      <Button size="lg">Large</Button>
+      <Input aria-label="Aligned input" placeholder="Input (md)" style={{ width: 200 }} />
+    </Example>
+  </Section>
+
+  <Section id="other" title="Motion & layers" description="Durations and stacking order for floating UI.">
+    <Table density="compact" className="demo-token-table">
+      <caption>Motion, stacking, focus</caption>
+      <thead>
+        <tr><th scope="col">Token</th><th scope="col">Value</th></tr>
+      </thead>
+      <tbody>
+        {[...pick("duration"), ...pick("z-"), ...pick("line-height"), ...pick("font-weight"), ...pick("focus-ring")].map(([name, value]) => (
+          <tr><td><code>--ui-{name}</code></td><td><code>{value}</code></td></tr>
+        ))}
+      </tbody>
+    </Table>
+  </Section>
+</Layout>

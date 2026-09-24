@@ -1,0 +1,433 @@
+/*
+ * Showcase chrome only: page layout and example frames. Every value reads the
+ * library's --ui-* tokens; nothing here restyles a library component.
+ */
+
+/* The documented hook: point the library's font tokens at Astro's self-hosted faces */
+:root {
+  --ui-font-family-sans: var(--font-fira-sans);
+  --ui-font-family-mono: var(--font-ubuntu-mono);
+  --demo-header-height: calc(var(--ui-spacing) * 11);
+}
+
+html {
+  color-scheme: var(--ui-color-scheme);
+  scroll-padding-top: calc(var(--demo-header-height) + var(--ui-spacing) * 3);
+}
+
+body {
+  margin: 0;
+  background-color: var(--ui-background);
+  color: var(--ui-foreground);
+  font-family: var(--ui-font-family-sans);
+  font-size: var(--ui-font-size-md);
+  line-height: var(--ui-line-height-normal);
+}
+
+code {
+  font-family: var(--ui-font-family-mono);
+}
+
+:where(a, summary, main):focus-visible {
+  outline: 2px solid var(--ui-ring);
+  outline-offset: 2px;
+  border-radius: var(--ui-radius-sm);
+}
+
+main:focus {
+  outline: none;
+}
+
+.demo-skip {
+  position: absolute;
+  left: calc(var(--ui-spacing) * 2);
+  top: -100px;
+  z-index: 10;
+  padding: var(--ui-spacing) calc(var(--ui-spacing) * 2);
+  border-radius: var(--ui-radius-md);
+  background: var(--ui-card);
+  color: var(--ui-foreground);
+}
+
+.demo-skip:focus {
+  top: calc(var(--ui-spacing) * 2);
+}
+
+/* Header */
+.demo-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(var(--ui-spacing) * 1) calc(var(--ui-spacing) * 4);
+  min-height: var(--demo-header-height);
+  padding: var(--ui-spacing) calc(var(--ui-spacing) * 4);
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--ui-border);
+  background-color: color-mix(in srgb, var(--ui-card) 92%, transparent);
+  backdrop-filter: blur(8px);
+}
+
+.demo-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: calc(var(--ui-spacing) * 1.5);
+  color: inherit;
+  font-weight: var(--ui-font-weight-bold);
+  text-decoration: none;
+}
+
+.demo-brand-mark {
+  width: calc(var(--ui-spacing) * 3);
+  height: calc(var(--ui-spacing) * 3);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-primary);
+}
+
+.demo-version {
+  color: var(--ui-muted-foreground);
+  font-size: var(--ui-font-size-xs);
+  font-weight: var(--ui-font-weight-regular);
+}
+
+.demo-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ui-spacing);
+  margin-right: auto;
+}
+
+.demo-nav a {
+  padding: var(--ui-spacing) calc(var(--ui-spacing) * 2);
+  border-radius: var(--ui-radius-md);
+  color: var(--ui-muted-foreground);
+  font-size: var(--ui-font-size-sm);
+  text-decoration: none;
+}
+
+.demo-nav a:hover {
+  background: var(--ui-accent);
+  color: var(--ui-accent-foreground);
+}
+
+.demo-nav a[aria-current="page"] {
+  background: var(--ui-secondary);
+  color: var(--ui-secondary-foreground);
+  font-weight: var(--ui-font-weight-bold);
+}
+
+/* Page shell: optional sticky table of contents + content */
+.demo-shell {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: calc(var(--ui-spacing) * 5) calc(var(--ui-spacing) * 4);
+  box-sizing: border-box;
+}
+
+.demo-shell-toc {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: calc(var(--ui-spacing) * 6);
+}
+
+.demo-toc {
+  position: sticky;
+  top: calc(var(--demo-header-height) + var(--ui-spacing) * 4);
+  align-self: start;
+  max-height: calc(100vh - var(--demo-header-height) - var(--ui-spacing) * 8);
+  overflow-y: auto;
+  font-size: var(--ui-font-size-sm);
+}
+
+.demo-toc-group {
+  margin: calc(var(--ui-spacing) * 2) 0 var(--ui-spacing);
+  color: var(--ui-muted-foreground);
+  font-size: var(--ui-font-size-xs);
+  font-weight: var(--ui-font-weight-bold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.demo-toc ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.demo-toc a {
+  display: block;
+  padding: calc(var(--ui-spacing) * 0.5) var(--ui-spacing);
+  border-radius: var(--ui-radius-sm);
+  color: var(--ui-foreground);
+  text-decoration: none;
+}
+
+.demo-toc a:hover {
+  background: var(--ui-accent);
+}
+
+@media (max-width: 640px) {
+  /* A wrapped sticky header would eat a third of a phone screen */
+  .demo-header {
+    position: static;
+    padding-inline: calc(var(--ui-spacing) * 2.5);
+  }
+
+  .demo-nav {
+    order: 3;
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .demo-shell {
+    padding-inline: calc(var(--ui-spacing) * 2.5);
+  }
+}
+
+@media (max-width: 900px) {
+  .demo-shell-toc {
+    display: block;
+  }
+
+  .demo-toc {
+    position: static;
+    max-height: none;
+    margin-bottom: calc(var(--ui-spacing) * 4);
+    padding-bottom: calc(var(--ui-spacing) * 2);
+    border-bottom: 1px solid var(--ui-border);
+  }
+
+  .demo-toc ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 var(--ui-spacing);
+  }
+}
+
+.demo-footer {
+  padding: calc(var(--ui-spacing) * 4);
+  border-top: 1px solid var(--ui-border);
+  color: var(--ui-muted-foreground);
+  font-size: var(--ui-font-size-sm);
+  text-align: center;
+}
+
+/* Page intro */
+.demo-intro {
+  display: grid;
+  gap: calc(var(--ui-spacing) * 2);
+  max-width: 720px;
+  margin-bottom: calc(var(--ui-spacing) * 4);
+}
+
+/* Section = one component */
+.demo-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr); /* let wide children scroll, not stretch the page */
+  gap: calc(var(--ui-spacing) * 2.5);
+  padding-block: calc(var(--ui-spacing) * 6);
+  border-top: 1px solid var(--ui-border);
+}
+
+.demo-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(var(--ui-spacing) * 2);
+}
+
+.demo-lede {
+  max-width: 720px;
+}
+
+.demo-group-title {
+  margin-top: calc(var(--ui-spacing) * 6);
+}
+
+/* Example frame */
+.demo-example {
+  overflow: hidden;
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius-lg);
+  background-color: var(--ui-card);
+  color: var(--ui-card-foreground);
+}
+
+.demo-example-label {
+  margin: 0;
+  padding: var(--ui-spacing) calc(var(--ui-spacing) * 2.5);
+  border-bottom: 1px solid var(--ui-border);
+  background-color: var(--ui-subtle-surface);
+  color: var(--ui-foreground);
+  font-size: var(--ui-font-size-xs);
+  font-weight: var(--ui-font-weight-bold);
+}
+
+.demo-example-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: calc(var(--ui-spacing) * 2);
+  padding: calc(var(--ui-spacing) * 4);
+}
+
+.demo-example-stack {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+/* Tooltips and menus open outside their trigger; give them room */
+.demo-example-roomy {
+  overflow: visible;
+}
+
+.demo-example-roomy .demo-example-body {
+  padding-block: calc(var(--ui-spacing) * 10);
+  justify-content: center;
+}
+
+.demo-api {
+  color: var(--ui-muted-foreground);
+}
+
+.demo-api strong {
+  margin-right: var(--ui-spacing);
+  color: var(--ui-foreground);
+}
+
+.demo-code summary {
+  width: fit-content;
+  color: var(--ui-muted-foreground);
+  font-size: var(--ui-font-size-sm);
+  cursor: pointer;
+}
+
+.demo-code .astro-code {
+  margin: var(--ui-spacing) 0 0;
+  padding: calc(var(--ui-spacing) * 2.5);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius-md);
+  font-size: var(--ui-font-size-sm);
+}
+
+/* Shiki's dual themes: swap to the dark palette with the page */
+.dark .astro-code,
+.dark .astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+}
+
+/* Form field wrappers (the library labels nothing itself) */
+/* Fields align on their labels even when one shows an error message */
+.demo-example-body:has(> .demo-field) {
+  align-items: flex-start;
+}
+
+.demo-example-body > .demo-field {
+  flex: 1 1 200px;
+  min-width: 200px;
+}
+
+.demo-field {
+  display: grid;
+  gap: var(--ui-spacing);
+  font-size: var(--ui-font-size-sm);
+  font-weight: var(--ui-font-weight-bold);
+}
+
+.demo-fieldset {
+  display: grid;
+  gap: var(--ui-spacing);
+  margin: 0;
+  padding: calc(var(--ui-spacing) * 2) calc(var(--ui-spacing) * 3);
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius-md);
+}
+
+.demo-fieldset legend {
+  padding-inline: var(--ui-spacing);
+  font-size: var(--ui-font-size-sm);
+  font-weight: var(--ui-font-weight-bold);
+}
+
+/* Placeholder boxes for layout components */
+.demo-box {
+  min-width: calc(var(--ui-spacing) * 8);
+  padding: calc(var(--ui-spacing) * 2);
+  border: 1px dashed color-mix(in srgb, var(--ui-primary) 60%, transparent);
+  border-radius: var(--ui-radius-sm);
+  background: color-mix(in srgb, var(--ui-primary) 10%, transparent);
+  font-family: var(--ui-font-family-mono);
+  font-size: var(--ui-font-size-sm);
+  text-align: center;
+}
+
+.demo-outline {
+  width: 100%;
+  outline: 1px dashed var(--ui-muted-foreground);
+}
+
+.demo-fill {
+  width: 100%;
+}
+
+/* Foundations */
+.demo-token-table {
+  width: 100%;
+}
+
+.demo-swatch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--ui-spacing);
+  font-family: var(--ui-font-family-mono);
+  font-size: var(--ui-font-size-sm);
+}
+
+.demo-swatch::before {
+  content: "";
+  width: calc(var(--ui-spacing) * 4);
+  height: calc(var(--ui-spacing) * 4);
+  flex: none;
+  border: 1px solid rgb(0 0 0 / 15%);
+  border-radius: var(--ui-radius-sm);
+  background: var(--swatch);
+}
+
+.demo-bar {
+  height: calc(var(--ui-spacing) * 2);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-primary);
+}
+
+.demo-shape {
+  display: grid;
+  place-items: center;
+  width: calc(var(--ui-spacing) * 16);
+  height: calc(var(--ui-spacing) * 12);
+  border: 1px solid var(--ui-border);
+  background: var(--ui-card);
+  font-family: var(--ui-font-family-mono);
+  font-size: var(--ui-font-size-xs);
+}
+
+/* Home */
+.demo-hero {
+  display: grid;
+  gap: calc(var(--ui-spacing) * 3);
+  max-width: 760px;
+  padding-block: calc(var(--ui-spacing) * 6) calc(var(--ui-spacing) * 4);
+}
+
+.demo-flow {
+  margin: 0;
+  padding: calc(var(--ui-spacing) * 2.5);
+  border-radius: var(--ui-radius-md);
+  background: var(--ui-subtle-surface);
+  font-size: var(--ui-font-size-sm);
+  line-height: 1.4;
+  white-space: pre-wrap;
+}

@@ -1,0 +1,15 @@
+---
+interface Props {
+  label: string;
+  /** Lay the children out as a column instead of a wrapping row. */
+  stack?: boolean;
+}
+const { label, stack } = Astro.props;
+---
+
+<div class="demo-example">
+  <h3 class="demo-example-label">{label}</h3>
+  <div class:list={["demo-example-body", { "demo-example-stack": stack }]}>
+    <slot />
+  </div>
+</div>

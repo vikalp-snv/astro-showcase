@@ -1,0 +1,30 @@
+{
+  "name": "astro-showcase",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "ui:update": "npm --prefix ../../vikalp-ui run build && npm pack ../../vikalp-ui --pack-destination vendor && npm install ./vendor/vikalpshakya-ui-0.1.0.tgz"
+  },
+  "dependencies": {
+    "@astrojs/react": "^7.0.0",
+    "@vikalpshakya/ui": "file:vendor/vikalpshakya-ui-0.1.0.tgz",
+    "astro": "^7.3.5",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@types/node": "^26.6.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "typescript": "5.9.3"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

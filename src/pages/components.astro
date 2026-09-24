@@ -1,0 +1,625 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Section from "../components/Section.astro";
+import Example from "../components/Example.astro";
+import {
+  Alert,
+  Avatar,
+  Badge,
+  Button,
+  Card,
+  Checkbox,
+  Container,
+  Divider,
+  EmptyState,
+  Flex,
+  Grid,
+  Heading,
+  Input,
+  Link,
+  List,
+  Progress,
+  Radio,
+  Select,
+  Skeleton,
+  Spinner,
+  Stack,
+  Switch,
+  Table,
+  Text,
+  Textarea,
+} from "@vikalpshakya/ui";
+
+const groups = {
+  Actions: ["Button", "Link"],
+  "Data display": ["Badge", "Avatar", "Card", "Table", "List", "EmptyState"],
+  Feedback: ["Alert", "Progress", "Spinner", "Skeleton"],
+  Forms: ["Input", "Textarea", "Select", "Checkbox", "Radio", "Switch"],
+  Typography: ["Heading", "Text", "Divider"],
+  Layout: ["Container", "Flex", "Stack", "Grid"],
+};
+const toc = Object.entries(groups).map(([group, names]) => ({
+  group,
+  items: names.map((name) => ({ id: name.toLowerCase(), label: name })),
+}));
+
+const runs = [
+  { id: "#4812", profile: "5G SA", ues: 64, status: "success", label: "Passed" },
+  { id: "#4811", profile: "5G NSA", ues: 32, status: "warning", label: "Degraded" },
+  { id: "#4810", profile: "LTE", ues: 128, status: "error", label: "Failed" },
+] as const;
+
+const profiles = [
+  { value: "5g-sa", label: "5G SA" },
+  { value: "5g-nsa", label: "5G NSA" },
+  { value: "lte", label: "LTE" },
+  { value: "nb-iot", label: "NB-IoT (unlicensed)", disabled: true },
+];
+---
+
+<Layout title="Components" description="Static components of @vikalpshakya/ui" toc={toc}>
+  <div class="demo-intro">
+    <Heading level={1} size="3xl">Components</Heading>
+    <Text tone="muted">
+      Every component on this page is used in an <code>.astro</code> file without a
+      <code>client:*</code> directive: Astro renders it to HTML at build time, and the page ships
+      no JavaScript for it. Native form controls still work, because the browser provides their
+      behavior. Components that need React in the browser are on the
+      <Link href="/interactive/">Interactive</Link> page.
+    </Text>
+  </div>
+
+  <!-- Actions -->
+  <Heading level={2} size="xl" className="demo-group-title">Actions</Heading>
+
+  <Section
+    id="button"
+    title="Button"
+    description="A native <button>, or an <a> styled as a button when href is passed."
+    api='variant: "primary" | "secondary" | "outline" | "ghost" | "destructive" · size: "sm" | "md" | "lg" | "icon" · loading · href'
+    code={`<Button>Save</Button>\n<Button variant="outline" size="sm">Cancel</Button>\n<Button href="/docs">Read the docs</Button>\n<Button loading>Saving</Button>`}
+  >
+    <Example label="Variants">
+      <Button>Primary</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="outline">Outline</Button>
+      <Button variant="ghost">Ghost</Button>
+      <Button variant="destructive">Destructive</Button>
+    </Example>
+    <Example label="Sizes">
+      <Button size="sm">Small</Button>
+      <Button size="md">Medium</Button>
+      <Button size="lg">Large</Button>
+      <Button size="icon" variant="outline" aria-label="Next">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M3 8h10M9 4l4 4-4 4"></path>
+        </svg>
+      </Button>
+    </Example>
+    <Example label="States">
+      <Button disabled>Disabled</Button>
+      <Button variant="outline" disabled>Disabled outline</Button>
+      <Button loading>Saving</Button>
+      <Button variant="secondary" loading>Loading</Button>
+    </Example>
+    <Example label="As a link (href)">
+      <Button href="/foundations/">Internal link</Button>
+      <Button href="https://www.simnovus.com" target="_blank" rel="noopener" variant="outline">
+        simnovus.com (new tab)
+      </Button>
+    </Example>
+  </Section>
+
+  <Section
+    id="link"
+    title="Link"
+    description="A native anchor. Without href it is a valid placeholder and is styled as inactive."
+    api="All <a> attributes"
+    code={`<Link href="/docs">Documentation</Link>`}
+  >
+    <Example label="States">
+      <Text>Read the <Link href="/foundations/">foundations</Link> first.</Text>
+      <Link href="https://www.simnovus.com" target="_blank" rel="noopener">External (new tab)</Link>
+      <Link>Placeholder (no href)</Link>
+    </Example>
+  </Section>
+
+  <!-- Data display -->
+  <Heading level={2} size="xl" className="demo-group-title">Data display</Heading>
+
+  <Section
+    id="badge"
+    title="Badge"
+    description="A small status or category label."
+    api='variant: "primary" | "solid" | "neutral" | "success" | "warning" | "error" | "info"'
+    code={`<Badge variant="success">Passed</Badge>`}
+  >
+    <Example label="Variants">
+      <Badge>Primary</Badge>
+      <Badge variant="solid">Solid</Badge>
+      <Badge variant="neutral">Neutral</Badge>
+      <Badge variant="success">Success</Badge>
+      <Badge variant="warning">Warning</Badge>
+      <Badge variant="error">Error</Badge>
+      <Badge variant="info">Info</Badge>
+    </Example>
+  </Section>
+
+  <Section
+    id="avatar"
+    title="Avatar"
+    description="An image with an initials fallback. Switching to the fallback when an image fails to load needs hydration, so that case is on the Interactive page."
+    api='alt (required) · src · fallback · size: "sm" | "md" | "lg"'
+    code={`<Avatar src="/ada.png" alt="Ada Lovelace" />\n<Avatar alt="Grace Hopper" />  <!-- "GH" -->`}
+  >
+    <Example label="Sizes, image and initials">
+      <Avatar size="sm" alt="Ada Lovelace" />
+      <Avatar alt="Grace Hopper" />
+      <Avatar size="lg" alt="Alan Turing" />
+      <Avatar size="sm" src="/avatar.svg" alt="Test engineer" />
+      <Avatar src="/avatar.svg" alt="Test engineer" />
+      <Avatar size="lg" src="/avatar.svg" alt="Test engineer" />
+      <Avatar alt="Custom fallback" fallback="★" />
+    </Example>
+  </Section>
+
+  <Section
+    id="card"
+    title="Card"
+    description="A surface for grouped content. interactive adds a hover lift and primary border, for cards that are link targets."
+    api="interactive"
+    code={`<Card>\n  <Heading level={3}>Title</Heading>\n  <Text>Body</Text>\n</Card>`}
+  >
+    <Grid minColumnWidth="240px" gap={3}>
+      <Card>
+        <Badge>5G</Badge>
+        <Heading level={3} size="lg">Default card</Heading>
+        <Text tone="muted">Children stack with a consistent gap.</Text>
+      </Card>
+      <Card interactive>
+        <Badge variant="neutral">Hover me</Badge>
+        <Heading level={3} size="lg">Interactive card</Heading>
+        <Text tone="muted">
+          Lifts on hover. <Link href="/interactive/">See interactive components</Link>
+        </Text>
+      </Card>
+      <Card>
+        <Flex align="center" gap={2}>
+          <Avatar alt="Grace Hopper" />
+          <div>
+            <Text weight="bold">Grace Hopper</Text>
+            <Text size="sm" tone="muted">Test lead</Text>
+          </div>
+        </Flex>
+        <Divider />
+        <Flex gap={2} justify="end">
+          <Button size="sm" variant="outline">Message</Button>
+          <Button size="sm">Assign</Button>
+        </Flex>
+      </Card>
+    </Grid>
+  </Section>
+
+  <Section
+    id="table"
+    title="Table"
+    description="A native table with a wrapper that scrolls horizontally on narrow screens."
+    api='density: "default" | "compact" · hoverable'
+    code={`<Table hoverable>\n  <caption>Recent runs</caption>\n  <thead>…</thead>\n  <tbody>…</tbody>\n</Table>`}
+  >
+    <Example label="Default, hoverable" stack>
+      <Table hoverable>
+        <caption>Recent test runs</caption>
+        <thead>
+          <tr><th scope="col">Run</th><th scope="col">Profile</th><th scope="col">UEs</th><th scope="col">Status</th></tr>
+        </thead>
+        <tbody>
+          {runs.map((r) => (
+            <tr>
+              <td><Text as="span" mono>{r.id}</Text></td>
+              <td>{r.profile}</td>
+              <td>{r.ues}</td>
+              <td><Badge variant={r.status}>{r.label}</Badge></td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
+    </Example>
+    <Example label="Compact" stack>
+      <Table density="compact">
+        <caption>Compact density</caption>
+        <thead>
+          <tr><th scope="col">Run</th><th scope="col">Profile</th><th scope="col">UEs</th></tr>
+        </thead>
+        <tbody>
+          {runs.map((r) => (
+            <tr><td>{r.id}</td><td>{r.profile}</td><td>{r.ues}</td></tr>
+          ))}
+        </tbody>
+      </Table>
+    </Example>
+  </Section>
+
+  <Section
+    id="list"
+    title="List"
+    description="A native <ul> or <ol>; children are plain <li> elements."
+    api='ordered · variant: "default" | "plain" | "divided"'
+    code={`<List ordered>\n  <li>Attach UE</li>\n  <li>Run traffic</li>\n</List>`}
+  >
+    <Grid minColumnWidth="200px" gap={3}>
+      <Example label="default">
+        <List><li>Attach UEs</li><li>Run traffic</li><li>Collect KPIs</li></List>
+      </Example>
+      <Example label="ordered">
+        <List ordered><li>Attach UEs</li><li>Run traffic</li><li>Collect KPIs</li></List>
+      </Example>
+      <Example label="plain">
+        <List variant="plain"><li>Attach UEs</li><li>Run traffic</li><li>Collect KPIs</li></List>
+      </Example>
+      <Example label="divided">
+        <List variant="divided" className="demo-fill"><li>Attach UEs</li><li>Run traffic</li><li>Collect KPIs</li></List>
+      </Example>
+    </Grid>
+  </Section>
+
+  <Section
+    id="emptystate"
+    title="EmptyState"
+    description="A placeholder for a view with no data yet, usually with one action."
+    api="title (required) · description · icon · action"
+    code={`<EmptyState\n  title="No test runs yet"\n  description="Start a run to see results here."\n  action={<Button>Start run</Button>}\n/>`}
+  >
+    <Example label="With icon and action" stack>
+      <!-- Named slots become the icon/action props (Astro's way to pass markup to a prop) -->
+      <EmptyState title="No test runs yet" description="Runs you start appear here with their KPIs.">
+        <svg slot="icon" viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M4 5h16v11H4zM8 20h8M12 16v4"></path>
+        </svg>
+        <Button slot="action">Start a run</Button>
+      </EmptyState>
+    </Example>
+    <Example label="Title only" stack>
+      <EmptyState title="No results match your filters" />
+    </Example>
+  </Section>
+
+  <!-- Feedback -->
+  <Heading level={2} size="xl" className="demo-group-title">Feedback</Heading>
+
+  <Section
+    id="alert"
+    title="Alert"
+    description="A static message box. It isn't a live region by default; pass role='alert' or 'status' when inserting one after an event."
+    api='variant: "info" | "success" | "warning" | "error" · title · icon (null for none) · role'
+    code={`<Alert variant="warning" title="License expires soon">\n  Renew before 30 Sep.\n</Alert>`}
+  >
+    <Example label="Variants" stack>
+      <Alert title="Maintenance window">The lab is offline Saturday 02:00–04:00 UTC.</Alert>
+      <Alert variant="success" title="Run #4812 passed">All 64 UEs attached and passed traffic.</Alert>
+      <Alert variant="warning" title="License expires in 14 days">Renew to keep scheduled runs.</Alert>
+      <Alert variant="error" title="Run #4810 failed">RRC setup timed out on 12 UEs.</Alert>
+    </Example>
+    <Example label="Description only, no icon, long content" stack>
+      <Alert variant="info">A description without a title.</Alert>
+      <Alert icon={null} title="No icon">icon=&#123;null&#125; removes it.</Alert>
+      <Alert variant="warning" title="Long unbroken content wraps">
+        https://reports.example.com/runs/4812/artifacts/pcap/ue-17-rrc-setup-complete-with-a-very-long-unbroken-identifier
+      </Alert>
+    </Example>
+  </Section>
+
+  <Section
+    id="progress"
+    title="Progress"
+    description="A native <progress>. Omit value for indeterminate. Name it with a label."
+    api="value · max · aria-label"
+    code={`<label for="upload">Uploading</label>\n<Progress id="upload" value={40} max={100} />`}
+  >
+    <Example label="Determinate and indeterminate" stack>
+      <label class="demo-field" style="font-weight:normal">
+        Uploading capture (40%)
+        <Progress value={40} max={100} />
+      </label>
+      <label class="demo-field" style="font-weight:normal">
+        Complete (100%)
+        <Progress value={100} max={100} />
+      </label>
+      <label class="demo-field" style="font-weight:normal">
+        Waiting for gNB (indeterminate)
+        <Progress />
+      </label>
+    </Example>
+  </Section>
+
+  <Section
+    id="spinner"
+    title="Spinner"
+    description="A role='status' region with a visually hidden label. Pass label='' when something else already announces the loading."
+    api='size: "sm" | "md" | "lg" · label'
+    code={`<Spinner label="Loading runs" />`}
+  >
+    <Example label="Sizes">
+      <Spinner size="sm" label="Loading (small)" />
+      <Spinner label="Loading (medium)" />
+      <Spinner size="lg" label="Loading (large)" />
+      <Flex align="center" gap={1}>
+        <Spinner size="sm" label="" />
+        <Text as="span" size="sm">Decorative, next to visible text</Text>
+      </Flex>
+    </Example>
+  </Section>
+
+  <Section
+    id="skeleton"
+    title="Skeleton"
+    description="A decorative placeholder, hidden from assistive tech. Mark the loading region with aria-busy."
+    api='width · height · shape: "rect" | "circle"'
+    code={`<div aria-busy="true">\n  <Skeleton shape="circle" width={40} height={40} />\n  <Skeleton width="60%" />\n</div>`}
+  >
+    <Example label="Loading card">
+      <Card role="group" aria-busy="true" aria-label="Loading profile" style={{ width: "min(100%, 320px)" }}>
+        <Flex align="center" gap={2}>
+          <Skeleton shape="circle" width={40} height={40} />
+          <Stack gap={1} style={{ flex: 1 }}>
+            <Skeleton width="60%" />
+            <Skeleton width="40%" height={12} />
+          </Stack>
+        </Flex>
+        <Skeleton height={80} />
+      </Card>
+    </Example>
+  </Section>
+
+  <!-- Forms -->
+  <Heading level={2} size="xl" className="demo-group-title">Forms</Heading>
+
+  <Section
+    id="input"
+    title="Input"
+    description="A native input. The library adds no label: wrap it in a <label> or use aria-label. Invalid state is aria-invalid."
+    api="All <input> attributes"
+    code={`<label>\n  Email\n  <Input type="email" aria-invalid="true" aria-describedby="email-error" />\n</label>\n<Text id="email-error" size="sm" tone="error">Enter a valid email.</Text>`}
+  >
+    <Example label="States">
+      <label class="demo-field">Default<Input placeholder="Placeholder" /></label>
+      <label class="demo-field">Filled<Input defaultValue="gNB-DU 01" /></label>
+      <div class="demo-field">
+        <label for="email-invalid">Invalid</label>
+        <Input id="email-invalid" type="email" defaultValue="not-an-email" aria-invalid="true" aria-describedby="email-error" />
+        <Text id="email-error" size="sm" tone="error" weight="regular">Enter a valid email address.</Text>
+      </div>
+      <label class="demo-field">Disabled<Input disabled defaultValue="Read only source" /></label>
+    </Example>
+    <Example label="Native types">
+      <label class="demo-field">Password<Input type="password" defaultValue="secret" /></label>
+      <label class="demo-field">Number<Input type="number" defaultValue="64" min="1" /></label>
+      <label class="demo-field">Date<Input type="date" /></label>
+      <label class="demo-field">Search<Input type="search" placeholder="Search runs" /></label>
+    </Example>
+  </Section>
+
+  <Section
+    id="textarea"
+    title="Textarea"
+    description="A native textarea sharing Input's states; resizes vertically."
+    api="All <textarea> attributes"
+    code={`<Textarea rows={4} placeholder="Notes" />`}
+  >
+    <Example label="States">
+      <label class="demo-field">Default<Textarea rows={3} placeholder="Describe the test setup" /></label>
+      <label class="demo-field">Invalid<Textarea rows={3} aria-invalid="true" defaultValue="Too short" /></label>
+      <label class="demo-field">Disabled<Textarea rows={3} disabled defaultValue="Locked" /></label>
+    </Example>
+  </Section>
+
+  <Section
+    id="select"
+    title="Select"
+    description="A native select: keyboard, type-ahead and the mobile picker come from the browser."
+    api="options: { value, label, disabled? }[] · all <select> attributes"
+    code={`<Select\n  options={[\n    { value: "sa", label: "5G SA" },\n    { value: "lte", label: "LTE" },\n  ]}\n/>`}
+  >
+    <Example label="States">
+      <label class="demo-field">Default<Select options={profiles} /></label>
+      <label class="demo-field">Invalid<Select options={profiles} aria-invalid="true" /></label>
+      <label class="demo-field">Disabled<Select options={profiles} disabled /></label>
+    </Example>
+  </Section>
+
+  <Section
+    id="checkbox"
+    title="Checkbox"
+    description="A native checkbox; label wraps it in a <label>. The indeterminate state needs hydration (see the Interactive page)."
+    api="label · checked / defaultChecked · disabled · aria-invalid · indeterminate"
+    code={`<Checkbox label="Capture PCAP" defaultChecked />`}
+  >
+    <Example label="States">
+      <Checkbox label="Unchecked" />
+      <Checkbox label="Checked" defaultChecked />
+      <Checkbox label="Disabled" disabled />
+      <Checkbox label="Disabled checked" disabled defaultChecked />
+      <Checkbox label="Invalid" aria-invalid="true" />
+    </Example>
+  </Section>
+
+  <Section
+    id="radio"
+    title="Radio"
+    description="Radios sharing a name form a group with native arrow-key navigation. Wrap them in a fieldset with a legend."
+    api="label · name · value · checked / defaultChecked · disabled"
+    code={`<fieldset>\n  <legend>Band</legend>\n  <Radio name="band" value="n78" label="n78" defaultChecked />\n  <Radio name="band" value="n41" label="n41" />\n</fieldset>`}
+  >
+    <Example label="Group">
+      <fieldset class="demo-fieldset">
+        <legend>Frequency band</legend>
+        <Radio name="band" value="n78" label="n78 (3.5 GHz)" defaultChecked />
+        <Radio name="band" value="n41" label="n41 (2.5 GHz)" />
+        <Radio name="band" value="n258" label="n258 (26 GHz, disabled)" disabled />
+      </fieldset>
+      <fieldset class="demo-fieldset">
+        <legend>Invalid group</legend>
+        <Radio name="duplex" value="tdd" label="TDD" aria-invalid="true" />
+        <Radio name="duplex" value="fdd" label="FDD" aria-invalid="true" />
+      </fieldset>
+    </Example>
+  </Section>
+
+  <Section
+    id="switch"
+    title="Switch"
+    description="A native checkbox with role='switch': Space toggles it, forms submit it, and screen readers announce on/off."
+    api="label · checked / defaultChecked · disabled"
+    code={`<Switch label="Capture PCAP" defaultChecked />`}
+  >
+    <Example label="States">
+      <Switch label="Off" />
+      <Switch label="On" defaultChecked />
+      <Switch label="Disabled" disabled />
+      <Switch label="Disabled on" disabled defaultChecked />
+    </Example>
+  </Section>
+
+  <!-- Typography -->
+  <Heading level={2} size="xl" className="demo-group-title">Typography</Heading>
+
+  <Section
+    id="heading"
+    title="Heading"
+    description="level sets the document outline (h1–h6) and is required; size changes only the look. Shown here at level 3 so the page outline stays valid."
+    api='level: 1–6 (required) · size: "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl"'
+    code={`<Heading level={2}>Section</Heading>\n<Heading level={3} size="xl">Looks bigger, still an h3</Heading>`}
+  >
+    <Example label="Sizes" stack>
+      <Heading level={3} size="4xl">4xl heading</Heading>
+      <Heading level={3} size="3xl">3xl heading</Heading>
+      <Heading level={3} size="2xl">2xl heading</Heading>
+      <Heading level={3} size="xl">xl heading</Heading>
+      <Heading level={3} size="lg">lg heading</Heading>
+      <Heading level={3} size="md">md heading</Heading>
+    </Example>
+  </Section>
+
+  <Section
+    id="text"
+    title="Text"
+    description="Body text. Unset props inherit from the parent, so Text composes inside other components."
+    api='as: "p" | "span" | "div" | "strong" | "em" | "small" · size · weight · tone: "default" | "muted" | "error" · align · truncate · mono'
+    code={`<Text size="sm" tone="muted">Updated 5 minutes ago</Text>`}
+  >
+    <Example label="Sizes and weights" stack>
+      <Text size="lg">Large text</Text>
+      <Text>Medium text (inherits the parent size when unset)</Text>
+      <Text size="sm">Small text</Text>
+      <Text size="xs">Extra small text</Text>
+      <Text weight="bold">Bold text</Text>
+    </Example>
+    <Example label="Tones, alignment, truncation, mono" stack>
+      <Text tone="muted">Muted: secondary information</Text>
+      <Text tone="error">Error: the field is required</Text>
+      <Text align="center">Centered</Text>
+      <Text align="end">End-aligned</Text>
+      <Text truncate style={{ maxWidth: 320 }}>
+        Truncated to one line with an ellipsis because this sentence is far too long to fit
+      </Text>
+      <Text mono>[12:04:11] RRC setup complete (UE 17)</Text>
+    </Example>
+  </Section>
+
+  <Section
+    id="divider"
+    title="Divider"
+    description="A native <hr> (role separator); vertical adds aria-orientation."
+    api='orientation: "horizontal" | "vertical"'
+    code={`<Divider />\n<Divider orientation="vertical" />`}
+  >
+    <Example label="Horizontal" stack>
+      <Text>Above</Text>
+      <Divider />
+      <Text>Below</Text>
+    </Example>
+    <Example label="Vertical">
+      <Flex align="center" gap={2} style={{ height: 24 }}>
+        <Text as="span">Runs</Text>
+        <Divider orientation="vertical" />
+        <Text as="span">Reports</Text>
+        <Divider orientation="vertical" />
+        <Text as="span">Settings</Text>
+      </Flex>
+    </Example>
+  </Section>
+
+  <!-- Layout -->
+  <Heading level={2} size="xl" className="demo-group-title">Layout</Heading>
+
+  <Section
+    id="container"
+    title="Container"
+    description="Centers content with a max width and page gutters."
+    api='as · size: "sm" (768px) | "md" (1024px) | "lg" (1280px, default) | "full"'
+    code={`<Container size="md" as="section">…</Container>`}
+  >
+    <Example label="sm · md (dashed outline = container)" stack>
+      <Container size="sm" className="demo-outline"><div class="demo-box">size="sm" · max 768px</div></Container>
+      <Container size="md" className="demo-outline"><div class="demo-box">size="md" · max 1024px</div></Container>
+    </Example>
+  </Section>
+
+  <Section
+    id="flex"
+    title="Flex"
+    description="A flexbox wrapper. Layout props become inline styles only when passed, so a className can set them otherwise."
+    api='as · direction · align · justify: "start" | "center" | "end" | "between" | "around" | "evenly" · wrap · gap'
+    code={`<Flex justify="between" align="center" gap={2}>…</Flex>`}
+  >
+    <Example label='justify="between" align="center"' stack>
+      <Flex justify="between" align="center" gap={2}>
+        <div class="demo-box">A</div><div class="demo-box" style="padding:24px">B</div><div class="demo-box">C</div>
+      </Flex>
+    </Example>
+    <Example label='direction="column" · wrap' stack>
+      <Flex direction="column" gap={1}>
+        <div class="demo-box">1</div><div class="demo-box">2</div>
+      </Flex>
+      <Flex wrap gap={1}>
+        {Array.from({ length: 12 }, (_, i) => <div class="demo-box">{i + 1}</div>)}
+      </Flex>
+    </Example>
+  </Section>
+
+  <Section
+    id="stack"
+    title="Stack"
+    description="Flex with a direction word and a default gap of 2 (12px)."
+    api='direction: "vertical" | "horizontal" · gap · align · justify'
+    code={`<Stack gap={3}>…</Stack>`}
+  >
+    <Grid minColumnWidth="240px" gap={3}>
+      <Example label="vertical (default gap)" stack>
+        <Stack><div class="demo-box">1</div><div class="demo-box">2</div><div class="demo-box">3</div></Stack>
+      </Example>
+      <Example label='horizontal gap={4}'>
+        <Stack direction="horizontal" gap={4}><div class="demo-box">1</div><div class="demo-box">2</div><div class="demo-box">3</div></Stack>
+      </Example>
+    </Grid>
+  </Section>
+
+  <Section
+    id="grid"
+    title="Grid"
+    description="CSS grid with a fixed column count, or responsive columns with minColumnWidth."
+    api="as · columns: 1–12 · minColumnWidth · gap · align"
+    code={`<Grid columns={3} gap={2}>…</Grid>\n<Grid minColumnWidth="200px">…</Grid>`}
+  >
+    <Example label="columns={4}" stack>
+      <Grid columns={4} gap={1}>
+        {Array.from({ length: 8 }, (_, i) => <div class="demo-box">{i + 1}</div>)}
+      </Grid>
+    </Example>
+    <Example label='minColumnWidth="160px" (resize the window)' stack>
+      <Grid minColumnWidth="160px" gap={2}>
+        {Array.from({ length: 6 }, (_, i) => <div class="demo-box">{i + 1}</div>)}
+      </Grid>
+    </Example>
+  </Section>
+</Layout>

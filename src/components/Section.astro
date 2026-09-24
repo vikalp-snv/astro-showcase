@@ -1,0 +1,35 @@
+---
+import { Code } from "astro:components";
+import { Badge, Heading, Text } from "@vikalpshakya/ui";
+
+interface Props {
+  id: string;
+  title: string;
+  description: string;
+  /** Short API summary: the props worth knowing. */
+  api?: string;
+  code?: string;
+  /** For islands: the client:* directive used, shown as a badge. */
+  hydration?: string;
+}
+
+const { id, title, description, api, code, hydration } = Astro.props;
+---
+
+<section class="demo-section" id={id} aria-labelledby={`${id}-title`}>
+  <div class="demo-section-head">
+    <Heading level={2} size="2xl" id={`${id}-title`}>{title}</Heading>
+    {hydration ? <Badge variant="solid">{hydration}</Badge> : <Badge variant="neutral">Static · no JS</Badge>}
+  </div>
+  <Text tone="muted" className="demo-lede">{description}</Text>
+  <slot />
+  {api && <Text size="sm" className="demo-api"><strong>API</strong> {api}</Text>}
+  {
+    code && (
+      <details class="demo-code">
+        <summary>Usage</summary>
+        <Code code={code} lang="astro" themes={{ light: "github-light", dark: "github-dark" }} />
+      </details>
+    )
+  }
+</section>

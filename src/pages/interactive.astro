@@ -1,0 +1,160 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Section from "../components/Section.astro";
+import Example from "../components/Example.astro";
+import DialogDemo from "../islands/DialogDemo";
+import DropdownDemo from "../islands/DropdownDemo";
+import TabsDemo from "../islands/TabsDemo";
+import TooltipDemo from "../islands/TooltipDemo";
+import ToastDemo from "../islands/ToastDemo";
+import IndeterminateCheckbox from "../islands/IndeterminateCheckbox";
+import AvatarFallback from "../islands/AvatarFallback";
+import { Alert, Heading, List, Text } from "@vikalpshakya/ui";
+
+const toc = [
+  {
+    group: "Interactive",
+    items: [
+      { id: "dialog", label: "Dialog" },
+      { id: "dropdown", label: "Dropdown" },
+      { id: "tabs", label: "Tabs" },
+      { id: "tooltip", label: "Tooltip" },
+      { id: "toast", label: "Toast" },
+    ],
+  },
+  {
+    group: "Partly interactive",
+    items: [
+      { id: "checkbox-indeterminate", label: "Checkbox indeterminate" },
+      { id: "avatar-fallback", label: "Avatar fallback" },
+    ],
+  },
+];
+---
+
+<Layout title="Interactive" description="Interactive components of @vikalpshakya/ui as Astro islands" toc={toc}>
+  <div class="demo-intro">
+    <Heading level={1} size="3xl">Interactive components</Heading>
+    <Text tone="muted">
+      These need React in the browser. Each demo is one island: a small <code>.tsx</code> file in
+      the app that composes library components, used here with a <code>client:*</code> directive.
+      The server renders their HTML first, so the page never waits on JavaScript to show content.
+    </Text>
+    <Alert title="Why a wrapper per demo?">
+      <List>
+        <li>
+          Compound parts (<code>DialogTitle</code>, <code>TabsTrigger</code>, <code>DropdownItem</code>…)
+          read their parent’s React context, and each <code>client:*</code> component is its own React
+          root. So the parts must be written together in one <code>.tsx</code> file.
+        </li>
+        <li>Dialog is controlled (<code>open</code> / <code>onOpenChange</code>), so it needs React state.</li>
+        <li><code>useToast()</code> must run under <code>ToastProvider</code> in the same island.</li>
+      </List>
+    </Alert>
+    <Text size="sm" tone="muted">
+      <strong>client:idle</strong> is used above the fold, so the controls are ready soon after
+      load without competing with it. <strong>client:visible</strong> is used lower down, so their
+      JavaScript loads only when scrolled into view.
+    </Text>
+  </div>
+
+  <Section
+    id="dialog"
+    title="Dialog"
+    hydration="client:idle"
+    description="A modal on the native <dialog> with showModal(): backdrop, top layer, Escape, focus trap and focus restore come from the browser."
+    api='open + onOpenChange (controlled) · size: "sm" | "md" | "lg" · closeLabel · DialogHeader, DialogTitle, DialogDescription, DialogFooter, DialogClose'
+    code={`---\nimport DialogDemo from "../islands/DialogDemo";\n---\n<DialogDemo client:idle />`}
+  >
+    <Example label="Sizes, form and confirm">
+      <DialogDemo client:idle />
+    </Example>
+  </Section>
+
+  <Section
+    id="dropdown"
+    title="Dropdown"
+    hydration="client:idle"
+    description="A menu button (WAI-ARIA pattern). Arrow keys, Home/End, Escape; closes on choice, Tab or an outside click."
+    api='DropdownTrigger (variant, size) · DropdownMenu (align: "start" | "end") · DropdownItem (checked, disabled)'
+    code={`<Dropdown>\n  <DropdownTrigger>Actions</DropdownTrigger>\n  <DropdownMenu>\n    <DropdownItem onClick={edit}>Edit</DropdownItem>\n  </DropdownMenu>\n</Dropdown>`}
+  >
+    <div class="demo-example demo-example-roomy">
+      <h3 class="demo-example-label">Actions, checkable items, end alignment</h3>
+      <div class="demo-example-body" style="justify-content:flex-start;padding-bottom:160px">
+        <DropdownDemo client:idle />
+      </div>
+    </div>
+  </Section>
+
+  <Section
+    id="tabs"
+    title="Tabs"
+    hydration="client:visible"
+    description="WAI-ARIA tabs with automatic activation. Arrow keys, Home and End move between enabled tabs; disabled tabs are skipped."
+    api="Tabs (value | defaultValue, onValueChange) · TabsList · TabsTrigger (value, disabled) · TabsContent (value)"
+    code={`<Tabs defaultValue="overview">\n  <TabsList aria-label="Run">\n    <TabsTrigger value="overview">Overview</TabsTrigger>\n  </TabsList>\n  <TabsContent value="overview">…</TabsContent>\n</Tabs>`}
+  >
+    <Example label="Uncontrolled, with a disabled tab" stack>
+      <TabsDemo client:visible />
+    </Example>
+  </Section>
+
+  <Section
+    id="tooltip"
+    title="Tooltip"
+    hydration="client:visible"
+    description="Shows on hover (after 300 ms) and keyboard focus (immediately); hides on leave, blur or Escape. The child gets aria-describedby."
+    api='content · placement: "top" | "bottom" | "left" | "right" · disabled'
+    code={`<Tooltip content="Refresh results">\n  <Button size="icon" aria-label="Refresh">…</Button>\n</Tooltip>`}
+  >
+    <div class="demo-example demo-example-roomy">
+      <h3 class="demo-example-label">Placements, icon button, disabled</h3>
+      <div class="demo-example-body">
+        <TooltipDemo client:visible />
+      </div>
+    </div>
+  </Section>
+
+  <Section
+    id="toast"
+    title="Toast"
+    hydration="client:visible"
+    description="Notifications in the bottom-right corner. Timers pause on hover and focus; error toasts are announced assertively."
+    api="ToastProvider (duration, label) · useToast() → toast({ title, description, variant, duration }), dismiss(id)"
+    code={`function SaveButton() {\n  const { toast } = useToast();\n  return <Button onClick={() => toast({ variant: "success", title: "Saved" })}>Save</Button>;\n}\n// <ToastProvider><SaveButton /></ToastProvider> in one island`}
+  >
+    <Example label="Variants, persistent, long content">
+      <ToastDemo client:visible />
+    </Example>
+  </Section>
+
+  <Heading level={2} size="xl" className="demo-group-title">Partly interactive</Heading>
+  <Text tone="muted">
+    These render fine as static HTML; only the state shown here needs hydration.
+  </Text>
+
+  <Section
+    id="checkbox-indeterminate"
+    title="Checkbox: indeterminate"
+    hydration="client:visible"
+    description="indeterminate is a DOM property, not an HTML attribute, so the server can't render it. The component sets it after hydrating."
+    api="indeterminate"
+  >
+    <Example label="Select all">
+      <IndeterminateCheckbox client:visible />
+    </Example>
+  </Section>
+
+  <Section
+    id="avatar-fallback"
+    title="Avatar: image fallback"
+    hydration='client:only="react"'
+    description="When src fails to load, Avatar switches to initials in an onError handler. A server-rendered <img> starts loading before React hydrates, so a fast 404 fires before the handler exists and the broken image stays (library limitation, see README of this demo). client:only renders the Avatar in the browser, so the handler is attached before the request starts."
+    api="src · alt · fallback"
+  >
+    <Example label="Broken src → initials (the 404 in the console is expected)">
+      <AvatarFallback client:only="react" />
+    </Example>
+  </Section>
+</Layout>

@@ -1,0 +1,114 @@
+---
+import Layout from "../layouts/Layout.astro";
+import TabsDemo from "../islands/TabsDemo";
+import { pkg } from "../lib/library";
+import * as ui from "@vikalpshakya/ui";
+import {
+  Alert,
+  Badge,
+  Button,
+  Card,
+  Flex,
+  Grid,
+  Heading,
+  Input,
+  Select,
+  Stack,
+  Switch,
+  Text,
+} from "@vikalpshakya/ui";
+
+// Counted from the installed package, not typed by hand
+const exportCount = Object.keys(ui).length;
+---
+
+<Layout title="Overview" description={pkg.description}>
+  <div class="demo-hero">
+    <Flex wrap gap={1}>
+      <Badge variant="solid">v{pkg.version}</Badge>
+      <Badge variant="neutral">React 18 / 19</Badge>
+      <Badge variant="neutral">Astro islands</Badge>
+    </Flex>
+    <Heading level={1} size="4xl">{pkg.name}</Heading>
+    <Text size="lg" tone="muted">
+      Simnovus’ shared component library: semantic design tokens, light and dark themes, and
+      accessible React components, reusable across Astro and React applications.
+    </Text>
+    <Flex wrap gap={2}>
+      <Button href="/components/" size="lg">Explore components</Button>
+      <Button href="/foundations/" size="lg" variant="outline">Foundations</Button>
+      <Button href="/interactive/" size="lg" variant="ghost">Interactive</Button>
+    </Flex>
+    <Text size="sm" tone="muted">
+      This page imports {exportCount} runtime exports from the installed package; everything
+      below is rendered by the library itself.
+    </Text>
+  </div>
+
+  <Grid minColumnWidth="340px" gap={3}>
+    <Card>
+      <Badge variant="neutral">Static</Badge>
+      <Heading level={2} size="lg">Static components</Heading>
+      <Text tone="muted">
+        Used in <code>.astro</code> files without a <code>client:*</code> directive, they render
+        to HTML and CSS at build time and ship no JavaScript.
+      </Text>
+      <pre class="demo-flow">{"Button · Card · Table …\n  → rendered by Astro at build time\n  → HTML + styles.css\n  → 0 KB client JS"}</pre>
+    </Card>
+    <Card>
+      <Badge variant="solid">Island</Badge>
+      <Heading level={2} size="lg">Interactive components</Heading>
+      <Text tone="muted">
+        Dialog, Dropdown, Tabs, Tooltip and Toast need React in the browser. Each demo is one
+        small island, hydrated only when it is idle or visible.
+      </Text>
+      <pre class="demo-flow">{"Tabs · Dialog · Toast …\n  → server-rendered HTML first\n  → client:idle / client:visible\n  → React hydrates that island only"}</pre>
+    </Card>
+  </Grid>
+
+  <section class="demo-section" aria-labelledby="sample-title">
+    <Heading level={2} size="2xl" id="sample-title">A few examples</Heading>
+    <Grid minColumnWidth="300px" gap={3} align="start">
+      <Card>
+        <Heading level={3} size="md">New test run</Heading>
+        <label class="demo-field">
+          Run name
+          <Input placeholder="e.g. Nightly regression" />
+        </label>
+        <label class="demo-field">
+          Profile
+          <Select
+            options={[
+              { value: "5g-sa", label: "5G SA" },
+              { value: "5g-nsa", label: "5G NSA" },
+              { value: "lte", label: "LTE" },
+            ]}
+          />
+        </label>
+        <Switch label="Capture PCAP" defaultChecked />
+        <Flex gap={2} justify="end">
+          <Button variant="ghost">Cancel</Button>
+          <Button>Start run</Button>
+        </Flex>
+      </Card>
+      <Stack gap={2}>
+        <Alert variant="success" title="Run #4812 passed">All 64 UEs attached.</Alert>
+        <Alert variant="warning" title="License expires in 14 days" />
+        <Flex wrap gap={1}>
+          <Badge variant="success">Passed</Badge>
+          <Badge variant="warning">Degraded</Badge>
+          <Badge variant="error">Failed</Badge>
+          <Badge variant="info">Queued</Badge>
+          <Badge variant="solid">Featured</Badge>
+        </Flex>
+      </Stack>
+      <Card>
+        <Flex justify="between" align="center" gap={2}>
+          <Heading level={3} size="md">Tabs</Heading>
+          <Badge variant="solid">client:visible</Badge>
+        </Flex>
+        <TabsDemo client:visible />
+      </Card>
+    </Grid>
+  </section>
+</Layout>
