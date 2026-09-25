@@ -5,7 +5,7 @@ normal package dependency and shows every exported component, the design
 tokens, and how interactive components become Astro islands.
 
 ```bash
-npm install          # install (library comes from vendor/*.tgz)
+npm install          # install (library comes from npm)
 npm run dev          # dev server, http://localhost:4321
 npm run build        # astro check + static build into dist/
 npm run preview      # serve dist/
@@ -14,18 +14,13 @@ npm run ui:update    # rebuild ../../vikalp-ui, repack it, reinstall it here
 
 ## How the library is consumed
 
-`package.json` depends on a packed tarball of the library:
+`package.json` depends on the library from npm:
 
 ```json
-"@vikalpshakya/ui": "file:vendor/vikalpshakya-ui-0.1.0.tgz"
+"@vikalpshakya/ui": "^0.2.0"
 ```
 
-`npm pack` produces exactly what `npm publish` would upload (the `files`
-list, `exports`, types), and npm installs it as a real copy, not a symlink.
-So the demo exercises the package boundary and gets a single React copy
-without any Vite `dedupe` config. The registry's `0.1.0` is older than the
-local source, which is why the demo doesn't install from the registry. Once a
-newer version is published, replace the line with a version range.
+The library is installed as a real copy, not a symlink. This ensures the demo exercises the package boundary and gets a single React copy without any Vite `dedupe` config.
 
 After changing the library, run `npm run ui:update`.
 
