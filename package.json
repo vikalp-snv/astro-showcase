@@ -8,11 +8,11 @@
     "build": "astro check && astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "ui:update": "npm --prefix ../../vikalp-ui run build && npm pack ../../vikalp-ui --pack-destination vendor && npm install ./vendor/vikalpshakya-ui-0.1.0.tgz"
+    "ui:update": "npm --prefix ../../vikalp-ui run build && npm pack ../../vikalp-ui --pack-destination vendor"
   },
   "dependencies": {
     "@astrojs/react": "^7.0.0",
-    "@vikalpshakya/ui": "file:vendor/vikalpshakya-ui-0.1.0.tgz",
+    "@vikalpshakya/ui": "^0.2.0",
     "astro": "^7.3.5",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
